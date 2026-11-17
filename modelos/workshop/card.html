@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<style>
+/* Modelo "Workshop" — 1080x1440. Troque os textos/foto via render.py (dados.json). */
+@font-face{font-family:"InterD";font-weight:900;src:url("file:///usr/share/fonts/opentype/inter/InterDisplay-Black.otf")}
+@font-face{font-family:"InterD";font-weight:800;src:url("file:///usr/share/fonts/opentype/inter/InterDisplay-ExtraBold.otf")}
+@font-face{font-family:"Inter";font-weight:400;src:url("file:///usr/share/fonts/opentype/inter/Inter-Regular.otf")}
+@font-face{font-family:"Inter";font-weight:700;src:url("file:///usr/share/fonts/opentype/inter/Inter-Bold.otf")}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1440px;background:#0d1b2a}
+.card{position:relative;width:1080px;height:1440px;overflow:hidden;color:#fff;font-family:"Inter",sans-serif}
+
+/* Camada 1 — foto em tela cheia */
+.foto{position:absolute;inset:0;background:center/cover no-repeat;background-image:var(--foto)}
+/* Camada 2 — tratamento de cor azul (unifica qualquer foto com a paleta do card) */
+.tom{position:absolute;inset:0;background:#1f4e7a;mix-blend-mode:soft-light;opacity:.55}
+/* Camada 3 — sombreamento superior (dá leitura ao título) */
+.sombra-topo{position:absolute;inset:0 0 auto 0;height:52%;
+  background:linear-gradient(180deg,rgba(10,24,40,.88) 0%,rgba(10,24,40,.55) 45%,rgba(10,24,40,0) 100%)}
+/* Camada 4 — sombreamento inferior (rodapé) */
+.sombra-base{position:absolute;inset:auto 0 0 0;height:42%;
+  background:linear-gradient(0deg,rgba(8,20,34,.95) 0%,rgba(8,20,34,.75) 40%,rgba(8,20,34,0) 100%)}
+/* Camada 5 — vinheta suave nas bordas */
+.vinheta{position:absolute;inset:0;background:radial-gradient(ellipse 85% 70% at 50% 55%,rgba(0,0,0,0) 60%,rgba(0,0,0,.35) 100%)}
+
+.titulo{position:absolute;top:68px;left:60px;right:60px;text-align:center;
+  font-family:"InterD";font-weight:900;text-transform:uppercase;
+  font-size:var(--tam-titulo,138px);line-height:.9;letter-spacing:-.025em;
+  text-shadow:0 4px 24px rgba(0,0,0,.25)}
+.subtitulo{margin-top:22px;font-family:"Inter";font-weight:400;font-size:28px;letter-spacing:0;
+  text-transform:none;opacity:.85;line-height:1.2}
+.data{position:absolute;left:60px;right:60px;top:1150px;text-align:center;font-size:31px;line-height:1.3}
+.data b{font-weight:700}
+.linha{position:absolute;left:62px;right:62px;top:1232px;height:2px;background:rgba(255,255,255,.45)}
+.rodape{position:absolute;left:62px;right:62px;top:1275px;display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:14px}
+.logo img{height:78px}
+.logo .marca{font-weight:700;font-size:30px;line-height:1}
+.logo .marca small{display:block;font-weight:400;font-size:18px;opacity:.75;margin-top:4px}
+.contato{text-align:right;font-size:23px;line-height:1.35}
+.contato b{font-size:25px}
+</style></head>
+<body><div class="card" id="card">
+  <div class="foto"></div><div class="tom"></div>
+  <div class="sombra-topo"></div><div class="sombra-base"></div><div class="vinheta"></div>
+  <div class="titulo" id="titulo"></div>
+  <div class="data" id="data"></div>
+  <div class="linha"></div>
+  <div class="rodape">
+    <div class="logo" id="logo"></div>
+    <div class="contato" id="contato"></div>
+  </div>
+</div></body></html>
