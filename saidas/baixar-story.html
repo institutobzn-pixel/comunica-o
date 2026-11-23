@@ -1,0 +1,65 @@
+<title>Story Gestão Financeira</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: uma coluna estreita, vídeo em pé no topo, botão grande logo abaixo. Visual único azul-marinho do instituto. */
+:root{
+  --bg:#0c1a2b; --surface:#13263d; --fg:#f3f6fa; --muted:#a9b6c7; --accent:#ffffff; --accent-fg:#0c1a2b; --line:rgba(255,255,255,.14);
+  --display:"Inter Display","Inter",system-ui,-apple-system,sans-serif; --body:"Inter",system-ui,-apple-system,sans-serif;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:440px;margin:0 auto;padding-block:24px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:18px}
+h1{font-family:var(--display);font-weight:900;font-size:1.6rem;line-height:1.05;letter-spacing:-.02em;margin:0;text-transform:uppercase;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;font-size:.95rem}
+video{width:100%;max-width:100%;aspect-ratio:9/16;border-radius:14px;background:#000;display:block}
+button{appearance:none;border:0;border-radius:12px;background:var(--accent);color:var(--accent-fg);font:700 1.1rem var(--body);padding:16px;width:100%;cursor:pointer}
+button:focus-visible{outline:3px solid #7fb2ff;outline-offset:3px}
+button:disabled{opacity:.6}
+#status{min-height:1.5em;margin:0;text-align:center;color:var(--muted);font-size:.95rem}
+.passos{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.passos h2{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.passos ol{margin:0;padding-left:1.2em;display:grid;gap:6px}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Gestão Financeira para Empreendedores</h1>
+    <p class="sub">Story · com Juceli Acioly · 1080×1920 · 24 s</p>
+  </header>
+
+  <video id="video" src="story.mp4" controls playsinline muted preload="metadata"></video>
+
+  <button id="baixar" type="button">Baixar vídeo</button>
+  <p id="status" role="status"></p>
+
+  <section class="passos">
+    <h2>No iPhone</h2>
+    <ol>
+      <li>Toque em <b>Baixar vídeo</b> e confirme.</li>
+      <li>Na tela que abrir, escolha <b>Salvar Vídeo</b>. Ele vai para o app Fotos.</li>
+      <li>No Instagram, crie o story e escolha o vídeo na galeria.</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+const btn = document.getElementById('baixar');
+const status = document.getElementById('status');
+let downloads = null;
+claude.use('downloads').then(d => { downloads = d; if (!d) status.textContent = 'Para baixar, abra esta página no app do Claude ou no navegador.'; });
+
+btn.addEventListener('click', async () => {
+  if (!downloads) { status.textContent = 'O download não está disponível nesta tela. Abra a página no app do Claude ou no Safari.'; return; }
+  btn.disabled = true; status.textContent = 'Preparando o vídeo…';
+  try {
+    const blob = await (await fetch('story.mp4')).blob();
+    await downloads.save({ filename: 'story-gestao-financeira.mp4', data: blob });
+    status.textContent = 'Pronto. Se abriu a tela de compartilhar, escolha "Salvar Vídeo".';
+  } catch (e) {
+    const code = e && e.code;
+    status.textContent = code === 'declined' ? 'Download cancelado. Toque de novo quando quiser.'
+      : code === 'rate_limited' ? 'Aguarde alguns segundos e toque de novo.'
+      : 'Não deu para baixar aqui. Tente abrir a página no Safari.';
+  } finally { btn.disabled = false; }
+});
+</script>
