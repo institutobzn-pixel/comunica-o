@@ -25,18 +25,16 @@ def chain(clips, xf, label):
     return cur
 
 op = chain(["broll/o1.mp4", "broll/o2.mp4", "broll/o3.mp4", "broll/o4.mp4", "broll/o5.mp4"], 0.4, "op")
-esp = chain(["broll/e1.mp4", "broll/e2.mp4", "broll/e3.mp4"], 0.6, "es")
 fim = chain(["broll/c1.mp4", "broll/c2.mp4", "broll/c3.mp4"], 0.6, "fi")
-segs = [add(c["arq"]) for c in tl["cortes"]]
-fg.append("".join(f"[{i}:v]" for i in segs) + f"concat=n={len(segs)}:v=1:a=0,setpts=PTS+{tl['cortes'][0]['t']}/TB[sp]")
+isp = add("fala_video.mp4")
+fg.append(f"[{isp}:v]setpts=PTS+13.65/TB[sp]")
 fg.append(f"color=c=black:s=1080x1920:r=30:d={END},format=yuv420p[bk]")
 fg.append(f"{op}format=rgba,fade=out:st=13.65:d=0.55:alpha=1[opa]")
-fg.append(f"{esp}setpts=PTS+84.0/TB,format=rgba,fade=in:st=84.0:d=0.4:alpha=1,fade=out:st=94.55:d=0.35:alpha=1[esa]")
 fg.append(f"{fim}setpts=PTS+140.35/TB,format=rgba,fade=in:st=140.35:d=0.8:alpha=1[fia]")
 fg.append("[bk][sp]overlay=eof_action=pass[v1]")
 fg.append("[v1][opa]overlay=eof_action=pass[v2]")
-fg.append("[v2][esa]overlay=eof_action=pass[v3]")
-fg.append("[v3][fia]overlay=eof_action=pass[v4]")
+fg.append("[v2][fia]overlay=eof_action=pass[v3]")
+fg.append("[v3]ass=legendas.ass:fontsdir=/usr/share/fonts/opentype/inter[v4]")
 cur = "[v4]"
 for k, (a, z) in enumerate(faixas):
     i = add(f"tit/t{k}.mov")
