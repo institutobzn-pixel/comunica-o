@@ -1,0 +1,40 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:"InterD";font-weight:900;src:url("file:///usr/share/fonts/opentype/inter/InterDisplay-Black.otf")}
+@font-face{font-family:"InterD";font-weight:500;font-style:italic;src:url("file:///usr/share/fonts/opentype/inter/InterDisplay-MediumItalic.otf")}
+@font-face{font-family:"Inter";font-weight:400;src:url("file:///usr/share/fonts/opentype/inter/Inter-Regular.otf")}
+@font-face{font-family:"Inter";font-weight:700;src:url("file:///usr/share/fonts/opentype/inter/Inter-Bold.otf")}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;background:transparent}
+.l{position:absolute;inset:0;color:#fff;font-family:Inter;display:none}
+/* BASE: sombreamentos + logo */
+.topo{position:absolute;inset:0 0 auto 0;height:560px;background:linear-gradient(180deg,rgba(10,24,40,.75),rgba(10,24,40,.35) 50%,rgba(10,24,40,0))}
+.base{position:absolute;inset:auto 0 0 0;height:900px;background:linear-gradient(0deg,rgba(8,20,34,.92) 0%,rgba(8,20,34,.7) 40%,rgba(8,20,34,0) 100%)}
+.logo{position:absolute;top:235px;left:70px}
+.logo img{width:230px;display:block;filter:drop-shadow(0 2px 10px rgba(0,0,0,.25))}
+/* TEXTO de abertura */
+.bloco{position:absolute;left:70px;right:70px;bottom:380px;text-align:center}
+.pre{font-family:InterD;font-style:italic;font-weight:500;font-size:64px;margin-bottom:10px}
+.tit{font-family:InterD;font-weight:900;text-transform:uppercase;font-size:168px;line-height:.9;letter-spacing:-.03em;text-shadow:0 6px 30px rgba(0,0,0,.3)}
+.linha{height:2px;background:rgba(255,255,255,.5);margin:44px auto 34px;width:100%}
+.com{font-size:44px}.com b{font-weight:700}
+/* CARTÃO FINAL */
+#fim{background:#0a1828;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+#fim img{width:420px;margin-bottom:90px}
+#fim .tit{font-size:128px}
+#fim .com{margin-top:30px}
+</style></head><body>
+<div class="l" id="base"><div class="topo"></div><div class="base"></div>
+  <div class="logo"><img src="../../marca/logo-branca.png"></div></div>
+<div class="l" id="texto"><div class="bloco">
+  <div class="pre">Exposição</div>
+  <div class="tit">Recomeço</div>
+  <div class="linha"></div>
+  <div class="com">Obras de <b>Isabel Ferreira</b></div>
+</div></div>
+<div class="l" id="fim">
+  <img src="../../marca/logo-branca.png">
+  <div class="pre">Exposição</div>
+  <div class="tit">Recomeço</div>
+  <div class="com">Obras de <b>Isabel Ferreira</b></div>
+</div>
+</body></html>
