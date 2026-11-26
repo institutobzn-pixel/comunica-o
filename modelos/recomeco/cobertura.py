@@ -10,10 +10,19 @@ UP = ("scale=1088:1922:flags=lanczos,crop=1080:1920,hqdn3d=1.2:1.2:3:3,unsharp=5
       "eq=contrast=1.03:saturation=1.02,fps=30,format=yuv420p")
 def run(a): subprocess.run(a, check=True)
 
+# versões enviadas depois, sem o ícone do Instagram (mesma linha do tempo das anteriores)
+SEM_ICONE = {"W1016": "orig/ae878d51.mp4", "W1021": "orig/af0681e5.mp4", "W0931": "orig/f4252b95.mp4",
+             "W0933": "orig/123e982c.mp4", "W0938": "orig/924f878a.mp4"}
+X_ENQ = {"E": 20}   # deslocamento horizontal do enquadramento quando a artista está mais à esquerda
+
 def isabel(nome, vid, s0, s1):  # plano da artista, sincronizado com a voz (15% mais rápido)
+    """Enquadra acima da assinatura (y < 735): nenhuma marca precisa ser apagada."""
     if os.path.exists(f"cob/{nome}.mp4"): return (s1 - s0) / VEL
-    run(["ffmpeg", "-v", "error", "-y", "-ss", str(s0), "-t", f"{s1 - s0:.3f}", "-i", f"limpo_{vid}.mp4",
-         "-vf", f"setpts=(PTS-STARTPTS)/{VEL},{UP}", "-an", "-c:v", "libx264", "-crf", "15", "-preset", "fast", f"cob/{nome}.mp4"])
+    x = X_ENQ.get(nome, 33)
+    vf = (f"crop=413:735:{x}:0,setpts=(PTS-STARTPTS)/{VEL},scale=1080:1920:flags=lanczos,hqdn3d=1.2:1.2:3:3,"
+          f"unsharp=5:5:0.6:5:5:0,eq=contrast=1.03:saturation=1.02,fps=30,format=yuv420p")
+    run(["ffmpeg", "-v", "error", "-y", "-ss", str(s0), "-t", f"{s1 - s0:.3f}", "-i", SEM_ICONE[vid],
+         "-vf", vf, "-an", "-c:v", "libx264", "-crf", "15", "-preset", "fast", f"cob/{nome}.mp4"])
     return (s1 - s0) / VEL
 
 def obra(nome, img, ss, d, vel=0.7, z0=1.0, z1=1.06):  # vídeo IMG original em câmera lenta com zoom suave
@@ -64,9 +73,9 @@ P.append(("H4c", obra, ("H4c", "IMG_1192", 2.2, 1.0, 0.73)))
 P.append(("X", azuis, ("X",)))                                             # 83.97 telas azuis + ESPERANÇA
 P.append(("H5", obra, ("H5", "IMG_1197", 4.6, 2.4)))                       # depois das telas azuis (84–94.9 já é alta qualidade)
 P.append(("H5b", obra, ("H5b", "IMG_1193", 7.6, 1.2)))
-P.append(("E", isabel, ("E", "W1016", 36.05, 41.05)))                      # 100.05
 P.append(("H6a", obra, ("H6a", "IMG_1183", 9.9, 2.1)))
 P.append(("H6b", obra, ("H6b", "IMG_1184", 2.8, 2.6)))
+P.append(("H6c", obra, ("H6c", "IMG_1193", 0.0, 2.6)))
 P.append(("F", isabel, ("F", "W0938", 0.02, 4.66)))                        # 111.14 venda
 P.append(("H7a", obra, ("H7a", "IMG_1197", 11.4, 4.4)))
 P.append(("H7b", obra, ("H7b", "IMG_1186", 0.0, 3.3)))
@@ -81,7 +90,7 @@ def out_t(vid, s):
         if c["vid"] == vid and c["src_a"] - 0.02 <= s <= c["src_b"] + 0.6:
             return c["t"] + (s - c["src_a"]) / VEL
 ALVO = {"A": out_t("W1016", 0.02), "B": out_t("W1021", 0.02), "C": out_t("W0931", 0.02), "D": out_t("W0933", 0.02),
-        "E": out_t("W1016", 36.05), "F": out_t("W0938", 0.02), "G": out_t("W0938", 36.44), "X": 83.972}
+"F": out_t("W0938", 0.02), "G": out_t("W0938", 36.44), "X": 83.972}
 print({k: round(v, 2) for k, v in ALVO.items()})
 
 durs = {}
