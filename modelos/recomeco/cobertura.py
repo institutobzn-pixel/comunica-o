@@ -19,6 +19,8 @@ def isabel(nome, vid, s0, s1):  # plano da artista, sincronizado com a voz (15% 
     """Enquadra acima da assinatura (y < 735): nenhuma marca precisa ser apagada."""
     if os.path.exists(f"cob/{nome}.mp4"): return (s1 - s0) / VEL
     x = X_ENQ.get(nome, 33)
+    if os.environ.get("REALCAR"):   # super-resolução + restauração de rosto (pré-processado em cob/real_<nome>.mp4)
+        import shutil; shutil.copy(f"cob/real_{nome}.mp4", f"cob/{nome}.mp4"); return (s1 - s0) / VEL
     vf = (f"crop=413:735:{x}:0,setpts=(PTS-STARTPTS)/{VEL},scale=1080:1920:flags=lanczos,hqdn3d=1.2:1.2:3:3,"
           f"unsharp=5:5:0.6:5:5:0,eq=contrast=1.03:saturation=1.02,fps=30,format=yuv420p")
     run(["ffmpeg", "-v", "error", "-y", "-ss", str(s0), "-t", f"{s1 - s0:.3f}", "-i", SEM_ICONE[vid],
