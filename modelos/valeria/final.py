@@ -44,7 +44,7 @@ for v in pl["voz"]:
     s0 = int(v["t"] * SR); mix[s0:s0 + len(y)] += y * e[:, None]
 o = wave.open("comp/voz.wav", "wb"); o.setnchannels(2); o.setsampwidth(2); o.setframerate(SR); o.writeframes(np.clip(mix, -32768, 32767).astype(np.int16).tobytes()); o.close()
 
-faixas = json.load(open("tit/faixas.json")); cards = [(c["t"], c["t"] + c["d"]) for c in pl["cards"]]
+faixas = json.load(open("tit/faixas.json")); cards = [(c["t"], c["t"] + c["d"]) for c in pl["cards"]] + [(0, pl["cards"][0]["t"])]  # sem logo no gancho (texto no topo)
 ins = ["-i", "comp/base.mp4", "-loop", "1", "-i", "comp/logo.png"]; fg = []
 nao_card = "*".join(f"not(between(t,{a:.3f},{b:.3f}))" for a, b in cards)
 fg.append(f"[0:v][1:v]overlay=W-w-40:215:enable='{nao_card}'[v0]"); cur = "[v0]"
