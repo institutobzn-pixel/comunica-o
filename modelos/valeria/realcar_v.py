@@ -6,7 +6,7 @@ sys.argv = ["x", MD]; sys.path.insert(0, "/home/user/comunica-o/modelos/recomeco
 import realcar   # carrega Real-ESRGAN, RetinaFace e GFPGAN
 os.chdir(W); os.makedirs("vreal", exist_ok=True)
 plano = json.load(open("plano.json")); VEL = plano["VEL"]
-CROP = {"Vsit": ((24, 280, 432, 302), (1000, 700)), "Vstand": ((0, 106, 480, 470), (900, 881))}
+CROP = {"Vsit": ((24, 280, 432, 302), (1000, 700)), "Vstand": ((0, 106, 480, 470), (900, 882))}
 raw = subprocess.run(["ffmpeg", "-v", "error", "-i", "src.mp4", "-f", "rawvideo", "-pix_fmt", "bgr24", "-"], capture_output=True, check=True).stdout
 FR = np.frombuffer(raw, np.uint8).reshape(-1, 848, 480, 3); FPS = 30
 for k, p in enumerate(plano["pecas"]):

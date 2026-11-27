@@ -5,7 +5,7 @@ W = sys.argv[1]; OUT = os.path.abspath(sys.argv[2]); os.chdir(W); os.makedirs("c
 pl = json.load(open("plano.json")); VEL = pl["VEL"]; END = pl["total"]
 def run(a): subprocess.run(a, check=True)
 # máscara de cantos arredondados da janela e logo com sombra
-JAN = {"Vsit": (40, 600, 1000, 700), "Vstand": (90, 590, 900, 881)}
+JAN = {"Vsit": (40, 600, 1000, 700), "Vstand": (90, 590, 900, 882)}
 for nome, (_, _, WW, WH) in JAN.items():
     m = Image.new("L", (WW, WH), 0); ImageDraw.Draw(m).rounded_rectangle((0, 0, WW - 1, WH - 1), 38, fill=255); m.save(f"comp/mask_{nome}.png")
     sh = Image.new("RGBA", (WW + 120, WH + 120), (0, 0, 0, 0)); ImageDraw.Draw(sh).rounded_rectangle((60, 75, 60 + WW, 75 + WH), 38, fill=(0, 0, 0, 150))
