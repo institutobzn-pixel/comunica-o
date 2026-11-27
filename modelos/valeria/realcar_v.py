@@ -6,7 +6,7 @@ sys.argv = ["x", MD]; sys.path.insert(0, "/home/user/comunica-o/modelos/recomeco
 import realcar   # carrega Real-ESRGAN, RetinaFace e GFPGAN
 os.chdir(W); os.makedirs("vreal", exist_ok=True)
 plano = json.load(open("plano.json")); VEL = plano["VEL"]
-CROP = {"Vsit": ((60, 300, 360, 252), (1080, 756)), "Vstand": ((26, 0, 326, 580), (1080, 1920))}
+CROP = {"Vsit": ((24, 280, 432, 302), (1000, 700)), "Vstand": ((0, 106, 480, 470), (900, 881))}
 raw = subprocess.run(["ffmpeg", "-v", "error", "-i", "src.mp4", "-f", "rawvideo", "-pix_fmt", "bgr24", "-"], capture_output=True, check=True).stdout
 FR = np.frombuffer(raw, np.uint8).reshape(-1, 848, 480, 3); FPS = 30
 for k, p in enumerate(plano["pecas"]):
@@ -24,7 +24,7 @@ for k, p in enumerate(plano["pecas"]):
             up = realcar.super_res(FR[fi][y:y+h, x:x+w])
             up = cv2.resize(up, (ow, oh), interpolation=cv2.INTER_AREA)
             d = realcar.detect(up)
-            if d is not None and (d[1][2] - d[1][0]) > 50: up = realcar.restore_face(up, d[2])
+            if d is not None and (d[1][2] - d[1][0]) > 40: up = realcar.restore_face(up, d[2], blend=1.0)
             last = (fi, up)
         pr.stdin.write(last[1].tobytes())
         if i % 30 == 0: print(f"peça {k} {p['tipo']} {i}/{n} {time.time() - t0:.0f}s", flush=True)

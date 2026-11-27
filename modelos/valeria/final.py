@@ -5,10 +5,11 @@ W = sys.argv[1]; OUT = os.path.abspath(sys.argv[2]); os.chdir(W); os.makedirs("c
 pl = json.load(open("plano.json")); VEL = pl["VEL"]; END = pl["total"]
 def run(a): subprocess.run(a, check=True)
 # máscara de cantos arredondados da janela e logo com sombra
-WX, WY, WW, WH = 40, 560, 1000, 700
-m = Image.new("L", (WW, WH), 0); ImageDraw.Draw(m).rounded_rectangle((0, 0, WW - 1, WH - 1), 38, fill=255); m.save("comp/mask.png")
-sh = Image.new("RGBA", (WW + 120, WH + 120), (0, 0, 0, 0)); ImageDraw.Draw(sh).rounded_rectangle((60, 75, 60 + WW, 75 + WH), 38, fill=(0, 0, 0, 150))
-sh.filter(ImageFilter.GaussianBlur(28)).save("comp/sombra.png")
+JAN = {"Vsit": (40, 600, 1000, 700), "Vstand": (90, 590, 900, 881)}
+for nome, (_, _, WW, WH) in JAN.items():
+    m = Image.new("L", (WW, WH), 0); ImageDraw.Draw(m).rounded_rectangle((0, 0, WW - 1, WH - 1), 38, fill=255); m.save(f"comp/mask_{nome}.png")
+    sh = Image.new("RGBA", (WW + 120, WH + 120), (0, 0, 0, 0)); ImageDraw.Draw(sh).rounded_rectangle((60, 75, 60 + WW, 75 + WH), 38, fill=(0, 0, 0, 150))
+    sh.filter(ImageFilter.GaussianBlur(28)).save(f"comp/sombra_{nome}.png")
 lg = Image.open("/home/user/comunica-o/marca/logo-branca.png").convert("RGBA"); lg = lg.resize((150, int(150 * lg.height / lg.width)), Image.LANCZOS)
 cv = Image.new("RGBA", (lg.width + 40, lg.height + 40), (0, 0, 0, 0)); sd = Image.new("RGBA", lg.size, (0, 0, 0, 160)); sd.putalpha(lg.split()[3].point(lambda v: v * .55))
 cv.alpha_composite(sd, (20, 24)); cv = cv.filter(ImageFilter.GaussianBlur(6)); cv.alpha_composite(lg, (20, 20)); cv.save("comp/logo.png")
@@ -16,14 +17,13 @@ cv.alpha_composite(sd, (20, 24)); cv = cv.filter(ImageFilter.GaussianBlur(6)); c
 pecas = []
 for k, p in enumerate(pl["pecas"]):
     o = f"comp/c{k:02d}.mp4"; d = p["d"]
-    if p["tipo"] == "Vstand":
-        run(["ffmpeg", "-v", "error", "-y", "-i", f"vreal/p{k:02d}.mp4", "-t", f"{d:.3f}", "-vf", "fps=30,format=yuv420p", "-c:v", "libx264", "-crf", "14", "-preset", "fast", o])
-    elif p["tipo"] == "Vsit":
-        fc = (f"[0:v]setpts=(PTS-STARTPTS)/{VEL},fps=30,scale=1088:1922,crop=1080:1920,boxblur=28:3,eq=brightness=-0.10:saturation=1.15[bg];"
-              f"[1:v]scale={WW}:{WH}:flags=lanczos,format=rgba[w0];[2:v]format=gray[mk];[w0][mk]alphamerge[w];"
+    if p["tipo"] in JAN:
+        WX, WY, WW, WH = JAN[p["tipo"]]; tp = p["tipo"]
+        fc = (f"[0:v]setpts=(PTS-STARTPTS)/{VEL},fps=30,crop=480:575:0:0,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=30:3,eq=brightness=-0.12:saturation=1.15[bg];"
+              f"[1:v]scale={WW}:{WH}:flags=lanczos,unsharp=5:5:0.35:5:5:0,noise=alls=5:allf=t,format=rgba[w0];[2:v]format=gray[mk];[w0][mk]alphamerge[w];"
               f"[bg][3:v]overlay={WX-60}:{WY-75}[b2];[b2][w]overlay={WX}:{WY},format=yuv420p[v]")
         run(["ffmpeg", "-v", "error", "-y", "-ss", str(p["src_a"]), "-t", f"{d*VEL+0.2:.3f}", "-i", "src.mp4", "-i", f"vreal/p{k:02d}.mp4",
-             "-loop", "1", "-i", "comp/mask.png", "-loop", "1", "-i", "comp/sombra.png", "-filter_complex", fc, "-map", "[v]", "-t", f"{d:.3f}",
+             "-loop", "1", "-i", f"comp/mask_{tp}.png", "-loop", "1", "-i", f"comp/sombra_{tp}.png", "-filter_complex", fc, "-map", "[v]", "-t", f"{d:.3f}",
              "-c:v", "libx264", "-crf", "14", "-preset", "fast", o])
     elif p["tipo"].startswith("B:"):
         run(["ffmpeg", "-v", "error", "-y", "-i", f"broll/p{k:02d}.mp4", "-t", f"{d:.3f}", "-vf", "fps=30,format=yuv420p", "-c:v", "libx264", "-crf", "14", "-preset", "fast", o])
