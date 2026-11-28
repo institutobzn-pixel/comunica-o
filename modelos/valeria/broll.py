@@ -18,8 +18,11 @@ for k, p in enumerate(plano["pecas"]):
     partes = []
     for j, (v, ss, fr, z0, z1) in enumerate(MAPA[p["tipo"]]):
         d = p["d"] * fr; z = f"({z0}+({z1}-{z0})*t/{d:.3f})"; o = f"broll/p{k:02d}_{j}.mp4"
-        vf = (f"scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,setsar=1,"
-              f"scale=w='trunc(1080*{z}/2)*2':h=-2:eval=frame:flags=lanczos,crop=1080:1920,eq=contrast=1.05:saturation=1.06,format=yuv420p")
+        # sem zoom animado (o arredondamento do zoom fazia a imagem "tremer")
+        vf = "scale=1080:1920:force_original_aspect_ratio=increase:flags=lanczos,crop=1080:1920,fps=30,setsar=1,eq=contrast=1.05:saturation=1.06,format=yuv420p"
+        trf = f"broll/p{k:02d}_{j}.trf"   # estabiliza (tira a tremida da mão)
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(ss), "-t", f"{d:.3f}", "-i", SRC[v], "-vf", f"vidstabdetect=shakiness=6:accuracy=15:result={trf}", "-f", "null", "-"], check=True)
+        vf = f"vidstabtransform=input={trf}:smoothing=30:zoom=4:optzoom=0:interpol=bicubic," + vf
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(ss), "-t", f"{d:.3f}", "-i", SRC[v], "-vf", vf, "-an",
                         "-c:v", "libx264", "-crf", "15", "-preset", "fast", o], check=True); partes.append(o)
     open("broll/l.txt", "w").write("".join(f"file '{os.path.basename(x)}'\n" for x in partes))

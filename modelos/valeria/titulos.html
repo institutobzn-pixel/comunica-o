@@ -18,24 +18,25 @@ html,body{width:1080px;height:1920px;background:transparent;overflow:hidden}
 </style></head><body>
 
 <!-- gancho -->
-<div class="g" id="hook"><div style="position:absolute;inset:0 0 auto 0;height:900px;background:linear-gradient(180deg,rgba(6,14,30,.7),rgba(6,14,30,0))"></div>
-  <div class="c H sh" id="h1" style="top:250px;font-size:70px">Ela mora no interior<br>de São Paulo.</div>
-  <div class="c H sh" id="h2" style="top:430px;font-size:56px;line-height:1.05">E escolheu continuar<br><span class="pill">fazendo parte.</span></div>
+<div class="g" id="hook">
+  <div class="c H sh" id="h1" style="top:1318px;font-size:62px">Ela mora no interior<br>de São Paulo.</div>
+  <div class="c H sh" id="h2" style="top:1462px;font-size:50px;line-height:1.05">E escolheu continuar<br><span class="pill">fazendo parte.</span></div>
 </div>
+
 <!-- vinheta -->
 <div class="g" id="sting"><div class="card"></div>
   <div class="c H" id="s1" style="top:760px;font-size:150px;color:#11329b">Seja como</div>
   <div class="c H" id="s2" style="top:905px;font-size:150px"><span class="pill" style="border-radius:22px;padding:8px 30px 18px">a Valéria</span></div>
 </div>
 <!-- nome -->
-<div class="g" id="nome"><div class="c sh" style="top:300px">
+<div class="g" id="nome"><div style="position:absolute;inset:0 0 auto 0;height:760px;background:linear-gradient(180deg,rgba(6,14,30,.62),rgba(6,14,30,0))"></div><div class="c sh" style="top:300px">
   <div class="H" id="n1" style="font-size:96px">Valéria</div>
   <div id="n2" style="font-family:Inter;font-weight:600;font-size:36px;margin-top:14px;opacity:.95">Enfermeira comportamental</div>
   <div id="n3" style="margin-top:18px"><span class="lab" style="font-size:30px;padding:12px 26px 12px 20px"><span class="dot"></span>Associada do Instituto BZN</span></div></div></div>
-<div class="g" id="local"><div class="c" style="top:400px"><span class="lab"><span class="dot"></span>Hoje mora em Indaiatuba · SP</span></div></div>
+<div class="g" id="local"><div style="position:absolute;inset:0 0 auto 0;height:760px;background:linear-gradient(180deg,rgba(6,14,30,.62),rgba(6,14,30,0))"></div><div class="c" style="top:330px"><span class="lab"><span class="dot"></span>Hoje mora em Indaiatuba · SP</span></div></div>
 <div class="g" id="ench"><div style="position:absolute;inset:0 0 auto 0;height:700px;background:linear-gradient(180deg,rgba(6,14,30,.55),rgba(6,14,30,0))"></div>
   <div class="c" style="top:330px"><span class="lab"><span class="dot"></span>Enchentes no Rio Grande do Sul</span></div></div>
-<div class="g" id="nascer"><div class="c H sh" style="top:330px;font-size:66px">Ela viu o Instituto<br><span class="pill">nascer.</span></div></div>
+<div class="g" id="nascer"><div style="position:absolute;inset:0 0 auto 0;height:760px;background:linear-gradient(180deg,rgba(6,14,30,.62),rgba(6,14,30,0))"></div><div class="c H sh" style="top:330px;font-size:66px">Ela viu o Instituto<br><span class="pill">nascer.</span></div></div>
 <div class="g" id="cursos"><div style="position:absolute;inset:0 0 auto 0;height:700px;background:linear-gradient(180deg,rgba(6,14,30,.55),rgba(6,14,30,0))"></div>
   <div class="c" style="top:330px"><span class="lab"><span class="dot"></span>Ela já ministrou cursos aqui</span></div></div>
 <div class="g" id="result"><div style="position:absolute;inset:0 0 auto 0;height:760px;background:linear-gradient(180deg,rgba(6,14,30,.6),rgba(6,14,30,0))"></div>
@@ -54,16 +55,17 @@ const back=x=>{x=clamp(x);const c=1.7;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(
 function up(el,t,t0,d,dy){const p=ease((t-t0)/(d||.5));el.style.opacity=p;el.style.transform='translateY('+((1-p)*(dy===undefined?40:dy))+'px)'}
 function pop(el,t,t0,d){const p=clamp((t-t0)/(d||.45));el.style.opacity=clamp(p*2.5);el.style.transform='scale('+(0.7+0.3*back(p))+')'}
 function grp(id,t,a,b,fo){const g=$(id),on=t>=a-.01&&t<=b+.01;g.style.opacity=on?clamp(Math.min((t-a)/.18+1e-6,(b-t)/(fo||.3))):0;return on}
+const T=__T__;
 window.render=function(t){
-  if(grp('hook',t,0.1,5.95)){up($('h1'),t,0.15,.5); pop($('h2'),t,2.55,.5)}
-  if(grp('sting',t,6.107,7.607,.15)){pop($('s1'),t,6.15,.4); pop($('s2'),t,6.35,.45); $('s2').querySelector('.pill').style.transform='rotate(-3deg)'}
-  if(grp('nome',t,7.75,11.8)){up($('n1'),t,7.8,.5); up($('n2'),t,8.05,.5,20); up($('n3'),t,8.3,.5,20)}
-  if(grp('local',t,16.0,17.55,.25)){pop($('local').firstElementChild,t,16.02,.4)}
-  if(grp('ench',t,17.7,21.7)){pop($('ench').children[1],t,17.75,.4)}
-  if(grp('nascer',t,22.0,25.25)){pop($('nascer').firstElementChild,t,22.05,.45)}
-  if(grp('cursos',t,25.45,29.85)){pop($('cursos').children[1],t,25.5,.4)}
-  if(grp('result',t,36.7,40.05)){pop($('result').children[1],t,36.75,.45)}
-  if(grp('fim',t,51.915,56.71,.01)){$('fim').style.opacity=clamp((t-51.915)/.25); pop($('f1'),t,52.0,.45); pop($('f2'),t,52.2,.45); $('f2').querySelector('.pill').style.transform='rotate(-3deg)';
-     up($('f3'),t,52.7,.5,20); pop($('f4'),t,53.2,.5); up($('f5'),t,53.7,.5,10)}
+  let g=T.hook; if(grp('hook',t,g[0],g[1])){up($('h1'),t,g[0]+.05,.5); pop($('h2'),t,g[0]+2.2,.5)}
+  g=T.sting; if(grp('sting',t,g[0],g[1],.15)){pop($('s1'),t,g[0]+.05,.4); pop($('s2'),t,g[0]+.25,.45); $('s2').querySelector('.pill').style.transform='rotate(-3deg)'}
+  g=T.nome; if(grp('nome',t,g[0],g[1])){up($('n1'),t,g[0]+.05,.5); up($('n2'),t,g[0]+.3,.5,20); up($('n3'),t,g[0]+.55,.5,20)}
+  g=T.local; if(grp('local',t,g[0],g[1],.25)){pop($('local').children[1],t,g[0]+.02,.4)}
+  g=T.ench; if(grp('ench',t,g[0],g[1])){pop($('ench').children[1],t,g[0]+.05,.4)}
+  g=T.nascer; if(grp('nascer',t,g[0],g[1])){pop($('nascer').children[1],t,g[0]+.05,.45)}
+  g=T.cursos; if(grp('cursos',t,g[0],g[1])){pop($('cursos').children[1],t,g[0]+.05,.4)}
+  g=T.result; if(grp('result',t,g[0],g[1])){pop($('result').children[1],t,g[0]+.05,.45)}
+  g=T.fim; const f=g[0]; if(grp('fim',t,g[0],g[1],.01)){$('fim').style.opacity=clamp((t-f)/.25); pop($('f1'),t,f+.08,.45); pop($('f2'),t,f+.28,.45); $('f2').querySelector('.pill').style.transform='rotate(-3deg)';
+     up($('f3'),t,f+.8,.5,20); pop($('f4'),t,f+1.3,.5); up($('f5'),t,f+1.8,.5,10)}
 };
 </script></body></html>

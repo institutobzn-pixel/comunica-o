@@ -7,6 +7,7 @@ FIX = {"Desenho.": "BZN.", "Iatuba": "Indaiatuba", "Iatuba,": "Indaiatuba,"}
 def ts(x): return f"0:{int(x // 60):02d}:{x % 60:05.2f}"
 ev = []
 for v in pl["voz"]:
+    if v["seg"] == "gancho": continue   # no gancho o painel mostra o texto de abertura
     ws = [w for w in words if v["src_a"] - 0.05 <= w["s"] < v["src_b"]]
     out = lambda s: v["t"] + (s - v["src_a"]) / VEL
     grupo = []
@@ -32,7 +33,7 @@ WrapStyle: 0
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Cap,Inter Display Black,92,&H00FFC97A,&H00FFFFFF,&H00221208,&H64000000,0,0,0,0,100,100,0,0,1,5,3,2,140,140,470,1
+Style: Cap,Inter Display Black,92,&H00FFC97A,&H00FFFFFF,&H00221208,&H64000000,0,0,0,0,100,100,0,0,1,5,3,2,140,140,430,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

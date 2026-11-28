@@ -1,7 +1,10 @@
 """Trilha original (sintetizada) para o Reels da Valéria: 100 bpm, Sol maior, I–V–vi–IV, clima positivo e caloroso.
-Uso: python3 trilha.py saida.wav"""
+Uso: python3 trilha.py saida.wav plano.json"""
 import sys, wave, numpy as np
-SR = 44100; END = 56.71; N = int((END + 3) * SR); rng = np.random.default_rng(3)
+import json
+pl = json.load(open(sys.argv[2])); cd = {c["nome"]: c for c in pl["cards"]}
+ST, FI, CL = cd["STING"]["t"], cd["FIM"]["t"], pl["marcas"]["final"]["t"]
+SR = 44100; END = pl["total"]; N = int((END + 3) * SR); rng = np.random.default_rng(3)
 L = np.zeros(N, np.float32); R = np.zeros(N, np.float32)
 NT = {n: i for i, n in enumerate(["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"])}
 hz = lambda n: 440 * 2 ** ((NT[n[:-1]] + 12 * (int(n[-1]) - 4) - 9) / 12)
@@ -68,21 +71,22 @@ def secao(t0, t1, nivel, bateria=False, cordas=False, arp=True):
                 if j in (2, 6): clap(tj, .06 * nivel)
         pluck(ar[2], t, .04 * nivel, -.3); t = tf; k += 1
 
-# gancho (0–6.1): piano suave, sem bateria
-pad(["G3", "B3", "D4"], 0, 6.1, .03, att=1.5)
-for i, x in enumerate(["D5", "B4", "G4", "B4", "D5", "E5", "D5", "B4"]): piano(x, 0.3 + i * B * 1.5, .07, pan=.2 * (-1) ** i)
-riser(4.6, 6.1, .05); whoosh(5.7, 6.5, .1)
-# vinheta (6.1–7.6)
-boom(6.107, .35); [piano(x, 6.11, .09) for x in ("G4", "B4", "D5", "G5")]
-# história (7.6–36.6): cama calorosa
-secao(7.6, 36.63, 0.9)
-# clímax (36.6–51.9): bateria leve + cordas
-riser(35.1, 36.63, .04); boom(36.63, .2)
-secao(36.63, 51.915, 1.15, bateria=True, cordas=True)
-# final (51.9–56.7)
-whoosh(51.4, 52.2, .09); boom(51.915, .35)
-secao(51.915, 55.5, 1.25, bateria=True, cordas=True)
-pad(["G3", "B3", "D4", "G4"], 55.5, 56.6, .05, att=.1, rel=1.5); [piano(x, 55.5, .1, dur=3) for x in ("G3", "D4", "G4", "B4", "D5")]
+# gancho: piano suave, sem bateria
+pad(["G3", "B3", "D4"], 0, ST, .03, att=1.5)
+for i, x in enumerate(["D5", "B4", "G4", "B4", "D5", "E5", "D5", "B4", "G4"]):
+    if 0.3 + i * B * 1.5 < ST - 0.6: piano(x, 0.3 + i * B * 1.5, .07, pan=.2 * (-1) ** i)
+riser(ST - 1.5, ST, .05); whoosh(ST - 0.4, ST + 0.4, .1)
+# vinheta
+boom(ST, .35); [piano(x, ST + .01, .09) for x in ("G4", "B4", "D5", "G5")]
+# história: cama calorosa
+secao(ST + 1.5, CL, 0.9)
+# clímax: bateria leve + cordas
+riser(CL - 1.5, CL, .04); boom(CL, .2)
+secao(CL, FI, 1.15, bateria=True, cordas=True)
+# final
+whoosh(FI - 0.5, FI + 0.3, .09); boom(FI, .35)
+secao(FI, END - 1.2, 1.25, bateria=True, cordas=True)
+pad(["G3", "B3", "D4", "G4"], END - 1.2, END - .1, .05, att=.1, rel=1.5); [piano(x, END - 1.2, .1, dur=3) for x in ("G3", "D4", "G4", "B4", "D5")]
 
 def reverb(x, s):
     r = np.random.default_rng(s); n = int(2.2 * SR); t = np.arange(n) / SR
